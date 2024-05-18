@@ -39,7 +39,7 @@ const AlertMonitor = () => {
 
   const fetchLatestSerialNumber = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/alert-history');
+      const response = await axios.get('https://dementian-location.onrender.com/alert-history');
       const latestAlert = response.data[response.data.length - 1];
       setLatestSerialNumber(latestAlert.serial_number);
     } catch (error) {
@@ -49,7 +49,7 @@ const AlertMonitor = () => {
 
   const fetchAlertHistory = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/alert-history');
+      const response = await axios.get('https://dementian-location.onrender.com/alert-history');
       setAlertHistory(response.data);
     } catch (error) {
       console.error('Error fetching alert history:', error);
@@ -204,7 +204,7 @@ const AlertChecker = ({ latestSerialNumber, onViewHistoryClick }) => {
   useEffect(() => {
     const checkAlert = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/alert-history');
+        const response = await axios.get('https://dementian-location.onrender.com/alert-history');
         const latestAlert = response.data[response.data.length - 1];
         if (latestAlert.serial_number !== latestSerialNumber) {
           setAlert(latestAlert);

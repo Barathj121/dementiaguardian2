@@ -200,3 +200,44 @@ body {
 .chart-container h3 {
   margin-bottom: 20px;
 }
+
+/* Media queries */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-list {
+    flex-direction: column;
+  }
+
+  .nav-link {
+    margin: 5px 0;
+  }
+
+  .latest-alert, .history-container, .alert-box, .analytics-container {
+    margin: 10px;
+  }
+
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .history-header h2 {
+    margin-bottom: 10px;
+  }
+
+  .no-alert {
+    padding: 20px;
+  }
+
+  .no-alert button {
+    width: 100%;
+  }
+
+  .map-container {
+    height: 200px;
+  }
+}

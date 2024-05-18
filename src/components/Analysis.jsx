@@ -9,7 +9,7 @@ const Analysis = () => {
 
   const fetchAlertHistory = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/alert-history');
+      const response = await axios.get('https://dementian-location.onrender.com/alert-history');
       setAlertHistory(response.data);
     } catch (error) {
       console.error('Error fetching alert history:', error);
