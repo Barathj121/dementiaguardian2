@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Ma
 
 import AlertMonitor from './components/alert';
 import Analysis from './components/Analysis';
+import MedicineReminder from './components/MedicineReminder';
+import Current from './components/Currentlocation'
 
 function App() {
   return (
@@ -10,6 +12,8 @@ function App() {
       <Routes> {/* Wrap your Route components inside a Routes component */}
         <Route path="/" element={<AlertMonitor />} />
         <Route path="/analysis" element={<Analysis />} />
+        <Route path="/medicine" element={<MedicineReminder/>}/>
+        <Route path='/current' element={<Current/>}/>
       </Routes>
     </Router>
   );

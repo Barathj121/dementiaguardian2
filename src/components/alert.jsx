@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './alert.css'; // Import the CSS file for styling
 import Analytics from './Analysis'; // Import the Analytics component
+import MedicineReminder from './MedicineReminder'; // Import the MedicineReminder component
+import LocationMap from './Currentlocation'; // Import the LocationMap component
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Line, Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -35,6 +36,8 @@ const AlertMonitor = () => {
   const [latestSerialNumber, setLatestSerialNumber] = useState(null);
   const [viewHistory, setViewHistory] = useState(false);
   const [viewAnalytics, setViewAnalytics] = useState(false);
+  const [setReminder, setSetReminder] = useState(false);
+  const [viewCurrentLocation, setViewCurrentLocation] = useState(false);
   const [alertHistory, setAlertHistory] = useState([]);
 
   const fetchLatestSerialNumber = async () => {
@@ -64,47 +67,75 @@ const AlertMonitor = () => {
   const handleViewHistoryClick = () => {
     setViewHistory(true);
     setViewAnalytics(false);
+    setSetReminder(false);
+    setViewCurrentLocation(false); // Ensure other views are closed
   };
 
   const handleViewAnalyticsClick = () => {
     setViewAnalytics(true);
     setViewHistory(false);
+    setSetReminder(false);
+    setViewCurrentLocation(false); // Ensure other views are closed
+  };
+
+  const handleSetMedicineReminderClick = () => {
+    setSetReminder(true);
+    setViewHistory(false);
+    setViewAnalytics(false);
+    setViewCurrentLocation(false); // Ensure other views are closed
+  };
+
+  const handleGetCurrentLocationClick = () => {
+    setViewCurrentLocation(true);
+    setViewHistory(false);
+    setViewAnalytics(false);
+    setSetReminder(false);
   };
 
   const handleBackClick = () => {
     setViewHistory(false);
     setViewAnalytics(false);
+    setSetReminder(false);
+    setViewCurrentLocation(false);
   };
 
   return (
     <div className="container">
       <header className="header">
         <h1 className="title">Dementia Guardian</h1>
-        <NavBar onViewHistoryClick={handleViewHistoryClick} onViewAnalyticsClick={handleViewAnalyticsClick} onBackClick={handleBackClick} />
+        <NavBar 
+          onViewHistoryClick={handleViewHistoryClick} 
+          onViewAnalyticsClick={handleViewAnalyticsClick} 
+          onSetMedicineReminderClick={handleSetMedicineReminderClick} 
+          onGetCurrentLocationClick={handleGetCurrentLocationClick} // Add handler for "Get Current Location" click
+          onBackClick={handleBackClick} 
+        />
       </header>
       {viewHistory ? (
         <ViewHistory alertHistory={alertHistory} />
       ) : viewAnalytics ? (
         <Analytics alertHistory={alertHistory} /> // Render Analytics component
+      ) : setReminder ? (
+        <MedicineReminder /> // Render MedicineReminder component
+      ) : viewCurrentLocation ? (
+        <LocationMap /> // Render LocationMap component
+      ) : latestSerialNumber ? (
+        <div className="latest-alert">
+          <h2>Latest Serial Number: {latestSerialNumber}</h2>
+          <hr />
+          <AlertChecker latestSerialNumber={latestSerialNumber} onViewHistoryClick={handleViewHistoryClick} />
+        </div>
       ) : (
-        latestSerialNumber ? (
-          <div className="latest-alert">
-            <h2>Latest Serial Number: {latestSerialNumber}</h2>
-            <hr />
-            <AlertChecker latestSerialNumber={latestSerialNumber} onViewHistoryClick={handleViewHistoryClick} />
-          </div>
-        ) : (
-          <div className="no-alert">
-            <h2>No Alerts at the Moment</h2>
-            <button onClick={handleViewHistoryClick}>View Alert History</button>
-          </div>
-        )
+        <div className="no-alert">
+          <h2>No Alerts at the Moment</h2>
+          <button onClick={handleViewHistoryClick}>View Alert History</button>
+        </div>
       )}
     </div>
   );
 };
 
-const NavBar = ({ onViewHistoryClick, onViewAnalyticsClick, onBackClick }) => {
+const NavBar = ({ onViewHistoryClick, onViewAnalyticsClick, onSetMedicineReminderClick, onGetCurrentLocationClick, onBackClick }) => {
   return (
     <nav>
       <ul className="nav-list">
@@ -115,7 +146,13 @@ const NavBar = ({ onViewHistoryClick, onViewAnalyticsClick, onBackClick }) => {
           <a href="#" className="nav-link" onClick={onViewHistoryClick}>View Alert History</a>
         </li>
         <li>
-          <a href={Analytics} className="nav-link" onClick={onViewAnalyticsClick}>View Analytics</a>
+          <a href="#" className="nav-link" onClick={onViewAnalyticsClick}>View Analytics</a>
+        </li>
+        <li>
+          <a href="#" className="nav-link" onClick={onSetMedicineReminderClick}>Set Medicine Reminder</a>
+        </li>
+        <li>
+          <a href="#" className="nav-link" onClick={onGetCurrentLocationClick}>Get Current Location</a>
         </li>
       </ul>
     </nav>
@@ -151,7 +188,7 @@ const ViewHistory = ({ alertHistory }) => {
         filteredData = alertHistory.filter(alert => alert.source === 'Button');
         break;
       case 'timestamp':
-        filteredData = alertHistory.sort((a, b) => new Date(b.time_stamp)          .getTime() - new Date(a.time_stamp).getTime());
+        filteredData = alertHistory.sort((a, b) => new Date(b.time_stamp).getTime() - new Date(a.time_stamp).getTime());
         break;
       default:
         filteredData = alertHistory;
@@ -258,4 +295,3 @@ const formatTimestamp = (timestamp) => {
 };
 
 export default AlertMonitor;
-
