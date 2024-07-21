@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './map.css';
-import markerIcon from './assets/marker.png';
+import markerIcon from '../assets/marker.png';
 
 // Custom icon for markers
 const customIcon = new L.Icon({
