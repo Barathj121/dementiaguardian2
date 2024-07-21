@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker,Polyline } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './map.css';
+
+// Custom icon for markers
+const customIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+  shadowSize: [41, 41],
+});
 
 const Map = () => {
   const [lat, setLat] = useState(0);
@@ -25,6 +36,10 @@ const Map = () => {
       .catch(error => console.error(error));
   };
 
+  useEffect(() => {
+    fetchData(); // Fetch data on component mount
+  }, []);
+
   const polyline = [
     [lat, lng],
     [homeLat, homeLng]
@@ -32,15 +47,21 @@ const Map = () => {
 
   return (
     <div>
-      <button onClick={fetchData}>Fetch Data</button>
-      <MapContainer center={[lat, lng]} zoom={5}>
+      <button onClick={fetchData}>Refresh Data</button>
+      <MapContainer center={[lat || 0, lng || 0]} zoom={5} style={{ height: '400px', width: '100%' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={[lat, lng]} />
-        <Marker position={[homeLat, homeLng]} />
-        <Polyline pathOptions={{ color: 'blue' }} positions={polyline} />
+        {lat !== 0 && lng !== 0 && (
+          <Marker position={[lat, lng]} icon={customIcon} />
+        )}
+        {homeLat !== 0 && homeLng !== 0 && (
+          <Marker position={[homeLat, homeLng]} icon={customIcon} />
+        )}
+        {lat !== 0 && lng !== 0 && homeLat !== 0 && homeLng !== 0 && (
+          <Polyline pathOptions={{ color: 'blue' }} positions={polyline} />
+        )}
       </MapContainer>
     </div>
   );
