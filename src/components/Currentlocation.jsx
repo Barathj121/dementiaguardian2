@@ -56,7 +56,7 @@
 
 // export default LocationMap;
 
-// LocationMap.js
+// LocationMap.js (currentlocation.jsx)
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -91,7 +91,7 @@ const LocationMap = () => {
     <div className="map-container alert-box">
       <h2>Current Patient Location</h2>
       <div className="map-container-inner">
-        <MapContainer center={[0, 0]} zoom={16} style={{ height: '100%', width: '100%' }}>
+        <MapContainer center={locationData ? [locationData.lat, locationData.lon] : [0, 0]} zoom={16} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {locationData && (
             <LocationMarker position={[locationData.lat, locationData.lon]} />
